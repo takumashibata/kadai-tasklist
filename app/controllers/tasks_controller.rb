@@ -1,60 +1,49 @@
 class TasksController < ApplicationController
   before_action :set_task, only: [:show, :edit, :update, :destroy]
-    
-  def index
-      @pagy, @tasks = pagy(Task.all, items: 3)
-  end
 
-  def show
+  def index
+    @pagy, @tasks = pagy(current_user.tasks)
   end
 
   def new
-      @task = Task.new
+    @task = Task.new
   end
-
+  
   def create
-    @task = Task.new(task_params)
-
+    @task = current_user.tasks.new(task_params)
     if @task.save
-      flash[:success] = 'タスクが正常に投稿されました'
-      redirect_to @task
+      redirect_to tasks_url, notice: "タスクを登録しました。"
     else
-      flash.now[:danger] = 'タスクが投稿されませんでした'
       render :new
     end
+  end
+
+  def show
   end
 
   def edit
   end
 
   def update
-
     if @task.update(task_params)
-      flash[:success] = 'タスクは正常に更新されました'
-      redirect_to @task
+      redirect_to tasks_url, notice: "タスクを更新しました！"
     else
-      flash.now[:danger] = 'タスクは更新されませんでした'
       render :edit
     end
   end
 
   def destroy
     @task.destroy
-
-    flash[:success] = 'タスクは正常に削除されました'
-    redirect_to tasks_url
+    redirect_to tasks_url, notice: "タスクを削除しました。"
   end
-  
-  
+
   private
-  # Strong Parameter
-  
-  def set_task
-    @task = Task.find(params[:id])
-  end
-  
-  def task_params
-    params.require(:task).permit(:content, :status)
-  end
 
+    def task_params
+      params.require(:task).permit(:content, :status)
+    end
+
+    def set_task
+      @task = current_user.tasks.find(params[:id])
+    end
 end
