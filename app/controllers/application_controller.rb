@@ -1,16 +1,13 @@
 class ApplicationController < ActionController::Base
-  before_action :login_required
   include SessionsHelper
   include Pagy::Backend
 
   private
 
-    def current_user
-      @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  def required_user_logged_in
+    unless logged_in?
+      redirect_to login_url
     end
-
-    def login_required
-      redirect_to login_url unless current_user
-    end
+  end
 
 end

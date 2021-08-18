@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: [:show, :edit, :update, :destroy]
+  before_action :required_user_logged_in
+  before_action :set_task, only: [:edit, :update, :destroy]
 
   def index
     @pagy, @tasks = pagy(current_user.tasks)
@@ -19,6 +20,7 @@ class TasksController < ApplicationController
   end
 
   def show
+    @task = current_user.tasks.find_by(params[:id])
   end
 
   def edit
