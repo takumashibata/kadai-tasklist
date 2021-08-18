@@ -20,7 +20,7 @@ class TasksController < ApplicationController
   end
 
   def show
-    @task = current_user.tasks.find_by(params[:id])
+    @task = current_user.tasks.order(id: "asc").find_by(params[:id])
   end
 
   def edit
