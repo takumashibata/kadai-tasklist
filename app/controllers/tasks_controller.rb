@@ -1,6 +1,6 @@
 class TasksController < ApplicationController
   before_action :required_user_logged_in
-  before_action :set_task, only: [:edit, :update, :destroy]
+  before_action :set_task, only: [:show, :edit, :update, :destroy]
 
   def index
     @pagy, @tasks = pagy(current_user.tasks)
@@ -20,9 +20,6 @@ class TasksController < ApplicationController
   end
 
   def show
-    @task = current_user.tasks.find(params[:id])
-  rescue ActiveRecord::RecordNotFound => e
-    redirect_to tasks_url, notice: 'タスクが見つかりません'  
   end
 
   def edit
@@ -49,5 +46,7 @@ class TasksController < ApplicationController
 
     def set_task
       @task = current_user.tasks.find(params[:id])
+  rescue ActiveRecord::RecordNotFound => e
+    redirect_to root_url, notice: 'タスクが見つかりません'    
     end
 end
