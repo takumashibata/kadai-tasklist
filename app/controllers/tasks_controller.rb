@@ -13,8 +13,10 @@ class TasksController < ApplicationController
   def create
     @task = current_user.tasks.new(task_params)
     if @task.save
-      redirect_to tasks_url, notice: "タスクを登録しました。"
+      flash[:success] = "タスクを登録しました。"
+      redirect_to tasks_url
     else
+      flash.now[:danger] = "タスクに失敗しました。"
       render :new
     end
   end
@@ -27,15 +29,18 @@ class TasksController < ApplicationController
 
   def update
     if @task.update(task_params)
-      redirect_to tasks_url, notice: "タスクを更新しました！"
+      flash[:success] = "タスクを更新しました！"
+      redirect_to tasks_url
     else
+      flash.now[:danger] =  "タスクの更新に失敗しました"
       render :edit
     end
   end
 
   def destroy
     @task.destroy
-    redirect_to tasks_url, notice: "タスクを削除しました。"
+    flash[:success] = "タスクを削除しました。"
+    redirect_to tasks_url
   end
 
   private
@@ -47,6 +52,7 @@ class TasksController < ApplicationController
     def set_task
       @task = current_user.tasks.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
-    redirect_to root_url, notice: 'タスクが見つかりません'    
+    flash[:danger] = 'タスクが見つかりません' 
+    redirect_to root_url
     end
 end
